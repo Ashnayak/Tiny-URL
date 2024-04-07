@@ -23,12 +23,19 @@ app.post('/data', (req, res) => {
   // Save data to Redis
   client.set(key, value, (err, reply) => {
     if (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Internal Server Error' });
+      if (err instanceof redis.errors.ClientClosedError) {
+        // Handle ClientClosedError
+        return res.status(500).json({ error: 'Redis connection closed' });
+      } else {
+        console.error(err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
     }
     console.log(reply);
     res.status(201).json({ message: 'Data saved successfully' });
   });
+
+
 });
 
 // Start the server
