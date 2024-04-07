@@ -1,12 +1,16 @@
 const express = require('express');
 const redis = require('redis');
+const Redis = require('ioredis');
 
 // Create Express app
 const app = express();
 const port = 3000;
 
 // Create Redis client
-const client = redis.createClient();
+const client = new Redis({
+  host: '127.0.0.1',
+  port: 6379,
+});
 
 // Middleware to parse JSON requests
 app.use(express.json());
@@ -31,7 +35,6 @@ app.post('/data', (req, res) => {
         return res.status(500).json({ error: 'Internal Server Error' });
       }
     }
-    console.log(reply);
     res.status(201).json({ message: 'Data saved successfully' });
   });
 
