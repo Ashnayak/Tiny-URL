@@ -39,6 +39,26 @@ app.post('/data', (req, res) => {
   });
 
 
+// GET endpoint to retrieve data from Redis
+app.get('/data/:key', (req, res) => {
+  const { key } = req.params;
+
+  // Retrieve data from Redis
+  client.get(key, (err, reply) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (!reply) {
+      return res.status(404).json({ error: 'Data not found' });
+    }
+
+    res.json({ key, value: reply });
+  });
+});
+
+
 });
 
 // Start the server
