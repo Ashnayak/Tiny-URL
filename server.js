@@ -58,6 +58,26 @@ app.get('/data/:key', (req, res) => {
   });
 });
 
+// DELETE endpoint to delete a mapping from Redis
+app.delete('/data/:key', (req, res) => {
+  const { key } = req.params;
+
+  // Delete data from Redis
+  client.del(key, (err, reply) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    if (reply === 0) {
+      // If reply is 0, it means the key does not exist in Redis
+      return res.status(404).json({ error: 'Data not found' });
+    }
+
+    res.status(204).end(); // No content, successful deletion
+  });
+});
+
 
 });
 
