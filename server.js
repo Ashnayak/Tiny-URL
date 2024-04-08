@@ -21,28 +21,31 @@ function hashLongUrl(longUrl) {
   return crypto.createHash('sha256').update(longUrl).digest('hex').slice(0, 6);
 }
 
-// Shorten URL endpoint
+// Shorten URL endpoint with optional expiration
 app.post('/shorten', async (req, res) => {
-  const { longUrl } = req.body;
+  const { longUrl, expiresIn } = req.body;
+
   if (!longUrl) {
     return res.status(400).json({ error: 'A long URL is required' });
   }
 
-  // Check if a short code for the long URL already exists
   let shortCode = await client.get(`longUrl:${longUrl}`);
   if (!shortCode) {
-    // If not, generate a new short code based on a hash of the long URL
     shortCode = hashLongUrl(longUrl);
-    // Check if the generated shortCode already maps to a different long URL (collision)
     const existingLongUrl = await client.get(`shortCode:${shortCode}`);
     if (existingLongUrl && existingLongUrl !== longUrl) {
-      // Handle hash collision (very unlikely with a good hashing strategy and large enough hash space)
       return res.status(500).json({ error: 'Short code generation collision. Try again.' });
     }
 
-    // Save mappings from shortCode to longUrl and vice versa
+    // Set short code with optional expiration
     await client.set(`shortCode:${shortCode}`, longUrl);
     await client.set(`longUrl:${longUrl}`, shortCode);
+
+    if (expiresIn && expiresIn > 0) {
+      // Set expiration for both mappings
+      await client.expire(`shortCode:${shortCode}`, expiresIn);
+      await client.expire(`longUrl:${longUrl}`, expiresIn);
+    }
   }
 
   const shortUrl = `http://localhost:${port}/${shortCode}`;
