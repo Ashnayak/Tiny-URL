@@ -61,6 +61,7 @@
     "concat-map": "^0.0.1",
     "console-browserify": "^1.1.0",
     "core-util-is": "^1.0.3",
+    "crypto": "^1.0.1",
     "dashdash": "^1.14.1",
     "date-now": "^0.1.4",
     "dateformat": "^4.6.3",
