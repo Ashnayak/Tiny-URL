@@ -93,6 +93,12 @@ app.get('/stats/:shortCode', async (req, res) => {
   const { shortCode } = req.params;
 
   try {
+    // Retrieve the URL to ensure it exists before attempting to gather stats
+    const longUrl = await client.get(`shortCode:${shortCode}`);
+    if (!longUrl) {
+      return res.status(404).json({ error: 'Short URL not found' });
+    }
+    
     const totalAccesses = await client.get(`accessCount:total:${shortCode}`) || 0;
     const dailyAccesses = await client.hgetall(`accessCount:daily:${shortCode}`);
     const weeklyAccesses = await client.hgetall(`accessCount:weekly:${shortCode}`);
@@ -108,6 +114,33 @@ app.get('/stats/:shortCode', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+app.delete('/delete/:shortCode', async (req, res) => {
+  const { shortCode } = req.params;
+
+  try {
+    // Retrieve the long URL to ensure it exists before attempting to delete
+    const longUrl = await client.get(`shortCode:${shortCode}`);
+    if (!longUrl) {
+      return res.status(404).json({ error: 'Short URL not found' });
+    }
+
+    // Delete the short code and long URL mappings from Redis
+    await client.del(`shortCode:${shortCode}`);
+    await client.del(`longUrl:${longUrl}`);
+
+    // Delete related statistics and access counts
+    await client.del(`accessCount:total:${shortCode}`);
+    await client.del(`accessCount:daily:${shortCode}`);
+    await client.del(`accessCount:weekly:${shortCode}`);
+
+    res.json({ message: 'Short URL and associated data deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 // Start the server
 app.listen(port, () => {
