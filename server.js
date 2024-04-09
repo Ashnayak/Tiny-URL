@@ -21,6 +21,13 @@ function hashLongUrl(longUrl) {
   return crypto.createHash('sha256').update(longUrl).digest('hex').slice(0, 6);
 }
 
+// Helper function to get ISO week number
+function getISOWeekNumber(date) {
+  const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+  const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+}
+
 // Shorten URL endpoint with optional expiration
 app.post('/shorten', async (req, res) => {
   const { longUrl, expiresIn } = req.body;
@@ -61,7 +68,41 @@ app.get('/:shortCode', async (req, res) => {
     if (!longUrl) {
       return res.status(404).json({ error: 'URL not found' });
     }
+
+    // Increment the total access count
+    await client.incr(`accessCount:total:${shortCode}`);
+
+    // Get current date in YYYY-MM-DD format for daily count
+    const today = new Date().toISOString().split('T')[0];
+    // Increment daily access count
+    await client.hincrby(`accessCount:daily:${shortCode}`, today, 1);
+
+    // Calculate the current week number for weekly count
+    const currentWeek = getISOWeekNumber(new Date());
+    // Increment weekly access count
+    await client.hincrby(`accessCount:weekly:${shortCode}`, `week:${currentWeek}`, 1);
+
     res.redirect(longUrl);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.get('/stats/:shortCode', async (req, res) => {
+  const { shortCode } = req.params;
+
+  try {
+    const totalAccesses = await client.get(`accessCount:total:${shortCode}`) || 0;
+    const dailyAccesses = await client.hgetall(`accessCount:daily:${shortCode}`);
+    const weeklyAccesses = await client.hgetall(`accessCount:weekly:${shortCode}`);
+
+    res.json({
+      shortCode,
+      totalAccesses,
+      dailyAccesses,
+      weeklyAccesses,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal Server Error' });
