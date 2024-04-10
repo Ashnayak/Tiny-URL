@@ -23,19 +23,59 @@ These instructions will get you a copy of the project up and running on your loc
 # Installation
 - Clone the repository
 ```
-git clone <link>
-cd <dir>
+git clone https://github.com/Ashnayak/Tiny-URL.git
+cd Tiny-URL
 ```
 - Install npm
 ```
 npm install
 ```
-- env?
-
 - Start the Redis server (refer to Redis documentation for specific instructions based on your operating system).
 I use docker:
 ```
 docker run -p 6379:6379 -it redis/redis-stack-server:latest
 ```
+- Run the application
+```
+npm start
+```
+Your URL Shortening Service is now running and accessible at http://localhost:3000 (or another port if configured differently).
 
-- 
+# Usage
+
+- Creating a short URL
+Send a POST request to /shorten with a JSON body containing the longUrl and optionally, expiresIn to specify the expiration time in seconds.
+```
+$curl -X POST http://localhost:3000/shorten -H 'Content-Type: application/json' -d '{"longUrl": "https://www.example.com"}'
+```
+or if you want the link to expire in 60 seconds
+```
+$curl -X POST http://localhost:3000/shorten -H 'Content-Type: application/json' -d '{"longUrl": "https://www.example.com", "expireIn": 60}'
+```
+Output: {"shortUrl":"http://localhost:3000/abc123"}
+
+- Accessing a short URL
+```
+$curl "http://localhost:3000/abc123"
+```
+
+- Viewing Access Counts (Statistics)
+```
+$curl "http://localhost:3000/stats/abc123"
+```
+- Deleting a Short URL
+```
+$curl "http://localhost:3000/delete/abc123"
+```
+- Running the tests
+```
+npm test
+```
+- Running the code coverage
+```
+npm run test:coverage
+```
+# Built With
+- Express: The web framework used
+- Redis: In-memory data structure store
+- Node.js: JavaScript runtime
