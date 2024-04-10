@@ -4,7 +4,11 @@
   "description": "URL shortning service for managing short URLs and redirecting clients (similar to bit.ly or goo.gl). The system may eventually scale to support millions of short URLs.",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "jest --forceExit",
+    "test:coverage": "jest --coverage --forceExit"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "keywords": [
     "URL",
@@ -14,9 +18,11 @@
   "license": "ISC",
   "devDependencies": {
     "chai": "^5.1.0",
+    "express": "^4.19.2",
     "grunt": "^1.6.1",
     "grunt-contrib-jshint": "^3.2.0",
     "grunt-mocha-istanbul": "^5.0.2",
+    "ioredis": "^5.3.2",
     "istanbul": "^0.4.5",
     "jest": "^29.7.0",
     "mocha": "^10.4.0",
@@ -90,7 +96,6 @@
     "eventemitter2": "^0.4.14",
     "exit": "^0.1.2",
     "expand-tilde": "^2.0.2",
-    "express": "^4.19.2",
     "extend": "^3.0.2",
     "extsprintf": "^1.3.0",
     "fast-deep-equal": "^3.1.3",
@@ -137,7 +142,6 @@
     "inherits": "^2.0.4",
     "ini": "^1.3.8",
     "interpret": "^1.1.0",
-    "ioredis": "^5.3.2",
     "is-absolute": "^1.0.0",
     "is-binary-path": "^2.1.0",
     "is-core-module": "^2.13.1",

@@ -143,6 +143,7 @@ app.delete('/delete/:shortCode', async (req, res) => {
 });
 
 
+// module.exports = { app, hashLongUrl, client }; 
 module.exports = app;
 // client.quit();
 // module.exports = {hashLongUrl};
