@@ -79,3 +79,14 @@ npm run test:coverage
 - Express: The web framework used
 - Redis: In-memory data structure store
 - Node.js: JavaScript runtime
+
+# Design Process
+**Analyzing Requirements**: I began by identifying the core functionalities: Unique URL shortening, access expiration, access count statistics and URL deletion.
+
+**Prototyping and Iteration**: Starting with a basic implementation, I iteratively added features and refined the application, incorporating statistics tracking and collision handling.
+
+**Strategizing Testing**: Early in the development, I established a strategy for testing with Jest and Supertest, ensuring that changes could be made confidently without breaking existing functionality.
+
+**Considering Performance**: The selection of Redis was driven by a focus on performance, recognizing the importance of quick response times and the ability to scale.
+
+**Future-proofing the Design**: I aimed to keep the system modular, allowing for easy updates and expansions in the future without significant overhauls.
