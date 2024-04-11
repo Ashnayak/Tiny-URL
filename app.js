@@ -7,7 +7,6 @@ const app = express();
 // Middleware to parse JSON requests
 app.use(express.json());
 
-// const port = process.env.PORT || 3000;
 const { baseUrl } = require('./config');
 
 // Create Redis client
@@ -142,9 +141,5 @@ app.delete('/delete/:shortCode', async (req, res) => {
   }
 });
 
-
-// module.exports = { app, hashLongUrl, client }; 
-module.exports = app;
-// client.quit();
-// module.exports = {hashLongUrl};
+module.exports = { app, hashLongUrl }
 
