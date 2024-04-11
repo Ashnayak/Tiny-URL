@@ -46,26 +46,26 @@ Your URL Shortening Service is now running and accessible at http://localhost:30
 - Creating a short URL
 Send a POST request to /shorten with a JSON body containing the longUrl and optionally, expiresIn to specify the expiration time in seconds.
 ```
-$curl -X POST http://localhost:3000/shorten -H 'Content-Type: application/json' -d '{"longUrl": "https://www.example.com"}'
+curl -X POST http://localhost:3000/shorten -H 'Content-Type: application/json' -d '{"longUrl": "https://www.example.com"}'
 ```
 or if you want the link to expire in 60 seconds
 ```
-$curl -X POST http://localhost:3000/shorten -H 'Content-Type: application/json' -d '{"longUrl": "https://www.example.com", "expireIn": 60}'
+curl -X POST http://localhost:3000/shorten -H 'Content-Type: application/json' -d '{"longUrl": "https://www.example.com", "expiresIn": 60}'
 ```
 Output: {"shortUrl":"http://localhost:3000/abc123"}
 
 - Accessing a short URL
 ```
-$curl "http://localhost:3000/abc123"
+curl "http://localhost:3000/abc123"
 ```
 
 - Viewing Access Counts (Statistics)
 ```
-$curl "http://localhost:3000/stats/abc123"
+curl "http://localhost:3000/stats/abc123"
 ```
 - Deleting a Short URL
 ```
-$curl "http://localhost:3000/delete/abc123"
+curl "http://localhost:3000/delete/abc123"
 ```
 - Running the tests
 ```
