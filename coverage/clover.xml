@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1712726198012" clover="3.2.0">
-  <project timestamp="1712726198012" name="All files">
+<coverage generated="1712812808940" clover="3.2.0">
+  <project timestamp="1712812808941" name="All files">
     <metrics statements="72" coveredstatements="16" conditionals="24" coveredconditionals="4" methods="6" coveredmethods="1" elements="102" coveredelements="21" complexity="0" loc="72" ncloc="72" packages="1" files="2" classes="2"/>
     <file name="app.js" path="/Users/ashwininayak/Tiny_URL/Tiny-URL/app.js">
       <metrics statements="69" coveredstatements="13" conditionals="20" coveredconditionals="0" methods="6" coveredmethods="1"/>
