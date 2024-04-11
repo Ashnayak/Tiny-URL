@@ -90,3 +90,16 @@ npm run test:coverage
 **Considering Performance**: The selection of Redis was driven by a focus on performance, recognizing the importance of quick response times and the ability to scale.
 
 **Future-proofing the Design**: I aimed to keep the system modular, allowing for easy updates and expansions in the future without significant overhauls.
+<img width="792" alt="Screen Shot 2024-04-10 at 11 20 56 PM" src="https://github.com/Ashnayak/Tiny-URL/assets/18304940/91cbe69a-03aa-46f2-9cb0-bd7fe5d4c129">
+
+# Assumptions
+- **839 trillion unique ShortCodes**:
+With a 10-character shortcode using a character set of 62 possible characters, the system can theoretically support approximately 839 trillion unique short codes. 
+- **Handling edge case**:
+If a long URL is shortened and then shortened again with an 'expiresIn', the link will not expire.
+
+# Future Scope
+- **Data persistence using Redis snapshotting**:
+Redis can periodically take snapshots of your dataset and save it to disk in a binary file (usually called dump.rdb). This process can be configured to occur at specified intervals, such as after a certain number of write operations have occurred within a given timeframe.
+- **More unit tests to improve coverage**:
+I had difficulties with jest as it suggested that the test suite contained asynchronous operations that were not properly handled or terminated, potentially from the open database connection.
