@@ -18,7 +18,7 @@ const client = new Redis({
 // Function to hash long URL to a fixed length short code
 function hashLongUrl(longUrl) {
   // Using SHA-256 and slicing to get a shorter part of the hash
-  return crypto.createHash('sha256').update(longUrl).digest('hex').slice(0, 6);
+  return crypto.createHash('sha256').update(longUrl).digest('hex').slice(0, 10);
 }
 
 // Helper function to get ISO week number
