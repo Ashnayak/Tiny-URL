@@ -65,7 +65,7 @@ curl "http://localhost:3000/stats/abc123"
 ```
 - Deleting a Short URL
 ```
-curl "http://localhost:3000/delete/abc123"
+curl -X DELETE "http://localhost:3000/delete/abc123"
 ```
 - Running the tests
 ```
