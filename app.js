@@ -72,6 +72,16 @@ app.get('/:shortCode', async (req, res) => {
     // Increment the total access count
     await client.incr(`accessCount:total:${shortCode}`);
 
+    // Get current date and time in YYYY-MM-DD-HH-mm format for minute count
+    const minuteKey = new Date().toISOString().slice(0, 16);
+
+    // Increment minute access count
+    const minuteAccessKey = `accessCount:minute:${shortCode}:${minuteKey}`;
+    await client.incr(minuteAccessKey);
+    
+    // Set the minute key to expire after 24 hours
+    await client.expire(minuteAccessKey, 86400); 
+
     // Get current date in YYYY-MM-DD format for daily count
     const today = new Date().toISOString().split('T')[0];
     // Increment daily access count
@@ -103,11 +113,21 @@ app.get('/stats/:shortCode', async (req, res) => {
     const dailyAccesses = await client.hgetall(`accessCount:daily:${shortCode}`);
     const weeklyAccesses = await client.hgetall(`accessCount:weekly:${shortCode}`);
 
+    // Fetch minute counts for the last 24 hours
+    // const currentMinute = new Date().toISOString().slice(0, 16);
+    let last24HourAccesses = 0;
+    for (let i = 0; i < 1440; i++) { // 1440 minutes in 24 hours
+      const minuteOffset = new Date(new Date().setMinutes(new Date().getMinutes() - i)).toISOString().slice(0, 16);
+      const minuteCount = await client.get(`accessCount:minute:${shortCode}:${minuteOffset}`) || 0;
+      last24HourAccesses += parseInt(minuteCount);
+    }
+
     res.json({
       shortCode,
       totalAccesses,
-      dailyAccesses,
       weeklyAccesses,
+      dailyAccesses,
+      last24HourAccesses,
     });
   } catch (err) {
     console.error(err);
